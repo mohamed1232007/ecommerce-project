@@ -4,7 +4,7 @@ import { formatMoney } from "../../utils/money";
 export function PaymentSummary({ paymentSummary, loadCart }) {
     const navigate = useNavigate();
     const creatOrder = async () => {
-        await axios.post("/api/orders");
+        await axios.post("https://ecommerce-backend-sigma-azure.vercel.app/api/orders");
         await loadCart();
         navigate('/orders');
     };

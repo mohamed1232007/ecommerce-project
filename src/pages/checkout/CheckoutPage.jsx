@@ -4,22 +4,31 @@ import { OrderSummary } from "./OrderSummary";
 import { PaymentSummary } from "./PaymentSummary";
 import "./checkout-header.css";
 import "./CheckoutPage.css";
+
 export function CheckoutPage({ cart, loadCart }) {
     const [deliveryOptions, setDeliveryOptions] = useState([]);
     const [paymentSummary, setPaymentSummary] = useState(null);
+
     useEffect(() => {
         const fetchCheckoutData = async () => {
-            let response = await axios.get(
-                "/api/delivery-options?expand=estimatedDeliveryTime",
-            );
-            setDeliveryOptions(response.data);
+            try {
+                const deliveryResponse = await axios.get(
+                    "https://ecommerce-backend-sigma-azure.vercel.app/api/delivery-options?expand=estimatedDeliveryTime",
+                );
+                setDeliveryOptions(deliveryResponse.data);
 
-            response = await axios.get("/api/payment-summary");
-            setPaymentSummary(response.data);
+                const paymentResponse = await axios.get(
+                    "https://ecommerce-backend-sigma-azure.vercel.app/api/payment-summary",
+                );
+                setPaymentSummary(paymentResponse.data);
+            } catch (error) {
+                console.error("Error fetching checkout data:", error);
+            }
         };
 
         fetchCheckoutData();
     }, [cart]);
+
     return (
         <>
             <title>Checkout</title>
@@ -59,7 +68,10 @@ export function CheckoutPage({ cart, loadCart }) {
                         loadCart={loadCart}
                     />
 
-                    <PaymentSummary paymentSummary={paymentSummary} loadCart={loadCart}/>
+                    <PaymentSummary
+                        paymentSummary={paymentSummary}
+                        loadCart={loadCart}
+                    />
                 </div>
             </div>
         </>
